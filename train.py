@@ -4,7 +4,7 @@ import math
 import datasets
 import torch
 import transformers
-from datasets import load_metric
+from evaluate import load
 
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -267,5 +267,5 @@ if __name__ == '__main__':
         num_warmup_steps=train_args.num_warmup_steps,
         num_training_steps=train_args.max_train_steps,
     )
-    metric = load_metric("logppt/evaluation/seqeval_metric.py")
+    metric = load("seqeval")
     train()
