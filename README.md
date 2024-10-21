@@ -51,10 +51,15 @@ $ python fewshot-sampling.py
 
 ### 3.2. Training & Parsing
 ```shell
+# Set dataset name and shot size
 dataset=Apache
 shot=32
-trf="datasets/${dataset}/${shot}shot/1.json"
-tef="datasets/${dataset}/test.json"
+
+# Set the correct full paths for the training and test files
+trf="/Users/ehsanghafourian/Documents/ClayStevens/LogPPT/datasets/${dataset}/${shot}shot/1.json"
+tef="/Users/ehsanghafourian/Documents/ClayStevens/LogPPT/datasets_random/${dataset}/test.json"
+
+# Run the training script with the correct file paths
 python train.py --mode prompt-tuning --train_file ${trf} \
     --validation_file ${tef} \
     --model_name_or_path "./pretrained_models/roberta-base" \
@@ -68,6 +73,7 @@ python train.py --mode prompt-tuning --train_file ${trf} \
     --shot $shot \
     --dataset_name ${dataset} \
     --task_output_dir "outputs"
+
 ```
 The parsed logs (parsing results) are saved in the `outputs` folder.
 
