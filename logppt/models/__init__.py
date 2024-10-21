@@ -23,7 +23,7 @@ def add_label_token(lm_name, model, tokenizer, label_map, wo_label_words=False):
     elif "bert" in lm_name:
         return add_label_token_bert(model, tokenizer, label_map, wo_label_words)
     elif "gpt2" in lm_name:
-        return add_label_token_gpt2(model, tokenizer, label_map, wo_label_words)
+        return add_label_token_gpt2(model, tokenizer, label_map)
     elif "xlnet" in lm_name:
         return add_label_token_xlnet(model, tokenizer, label_map, wo_label_words)
     else:
