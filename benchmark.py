@@ -97,34 +97,44 @@ for dataset, setting in benchmark_settings.items():
     print('\n=== Evaluation on %s ===' % dataset)
     indir = os.path.join(input_dir, os.path.dirname(setting['log_file']))
     log_file = os.path.basename(setting['log_file'])
-    if not os.path.exists(os.path.join(output_dir, log_file + '_structured.csv')):
+    
+    # Check if the output file exists
+    output_file = os.path.join(output_dir, log_file + '_structured.csv')
+    if not os.path.exists(output_file):
+        print(f"Skipping {dataset}, output file not found: {output_file}")
         continue
-    # try:
-    GA, PA, ED, unseen_PA, no_unseen = evaluator(
-        groundtruth=os.path.join(input_dir, log_file + '_structured.csv'),
-        parsedresult=os.path.join(output_dir, log_file + '_structured.csv')
-    )
-    bechmark_result.append([dataset, GA, PA, ED, unseen_PA, no_unseen])  # , _, _, _, _, _, _])
-    avg_ga += GA
-    avg_pa += PA
-    avg_ed += ED
-    avg_unseen_pa += unseen_PA
-    avg_no_unseen += no_unseen
-    count += 1
-    if no_unseen > 0:
-        unseen_datasets += 1
-    # except Exception as ex:
-    #     print(ex)
-    #     pass
 
-bechmark_result.append(["Average", avg_ga / count, avg_pa / count,
-                        avg_ed / count, avg_unseen_pa / unseen_datasets,
-                        avg_no_unseen / unseen_datasets])
+    # Try evaluating the dataset
+    try:
+        GA, PA, ED, unseen_PA, no_unseen = evaluator(
+            groundtruth=os.path.join(input_dir, log_file + '_structured.csv'),
+            parsedresult=output_file
+        )
+        bechmark_result.append([dataset, GA, PA, ED, unseen_PA, no_unseen])
+        avg_ga += GA
+        avg_pa += PA
+        avg_ed += ED
+        avg_unseen_pa += unseen_PA
+        avg_no_unseen += no_unseen
+        count += 1
+        if no_unseen > 0:
+            unseen_datasets += 1
+    except Exception as ex:
+        print(f"Error evaluating {dataset}: {ex}")
+        pass
 
-print('\n=== Overall evaluation results ===')
-df_result = pd.DataFrame(bechmark_result,
-                         columns=['Dataset', 'Group Accuracy', 'Parsing Accuracy', 'Edit distance', 'unseen_PA',
-                                  'no_unseen'])
-df_result.set_index('Dataset', inplace=True)
-print(df_result)
-df_result.T.to_csv(os.path.join(output_dir, 'benchmark_result.csv'))
+# Check if there are datasets processed
+if count > 0:
+    bechmark_result.append(["Average", avg_ga / count, avg_pa / count,
+                            avg_ed / count, avg_unseen_pa / unseen_datasets,
+                            avg_no_unseen / unseen_datasets])
+
+    print('\n=== Overall evaluation results ===')
+    df_result = pd.DataFrame(bechmark_result,
+                             columns=['Dataset', 'Group Accuracy', 'Parsing Accuracy', 'Edit distance', 'unseen_PA',
+                                      'no_unseen'])
+    df_result.set_index('Dataset', inplace=True)
+    print(df_result)
+    df_result.T.to_csv(os.path.join(output_dir, 'benchmark_result.csv'))
+else:
+    print("No datasets were evaluated. Please check the input and output file paths.")

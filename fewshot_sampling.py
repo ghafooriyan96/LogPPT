@@ -58,7 +58,6 @@ if __name__ == '__main__':
                 # labeled_samples = [(row['Content'], row['EventTemplate']) for _, row in
                 #                    labelled_logs.sample(n=shot).iterrows()]
                 labeled_samples = [{"text": x[0], "label": x[1], "type": 1} for x in labeled_samples]
-                os.makedirs(f"datasets/{dataset}/{shot}shot", exist_ok=True)
                 with open("datasets/{0}/{1}shot/{2}.json".format(dataset, shot, itr), "w") as f:
                     for s in labeled_samples:
                         f.write(json.dumps(s) + "\n")
