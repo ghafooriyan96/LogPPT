@@ -1,3 +1,6 @@
+'''
+Generate the Tokenizer file based on the generated structured logs from Logppt
+'''
 import pandas as pd
 from transformers import GPT2Tokenizer
 import json
